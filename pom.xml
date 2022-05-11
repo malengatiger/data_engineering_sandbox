@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -14,15 +14,15 @@
 	<name>sandbox5</name>
 	<description>Sandbox to exercise GCP services</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 		<spring-cloud-gcp.version>2.0.3</spring-cloud-gcp.version>
 		<spring-cloud.version>2020.0.3</spring-cloud.version>
 	</properties>
 	<dependencies>
-<!--				<dependency>-->
-<!--					<groupId>org.springframework.boot</groupId>-->
-<!--					<artifactId>spring-boot-starter-actuator</artifactId>-->
-<!--				</dependency>-->
+		<!--				<dependency>-->
+		<!--					<groupId>org.springframework.boot</groupId>-->
+		<!--					<artifactId>spring-boot-starter-actuator</artifactId>-->
+		<!--				</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -35,11 +35,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-				<dependency>
-					<groupId>com.google.cloud</groupId>
-					<artifactId>spring-cloud-gcp-starter</artifactId>
-					<version>2.0.3</version>
-				</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>spring-cloud-gcp-starter</artifactId>
+			<version>2.0.3</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-gcp-starter-pubsub -->
 
 
@@ -94,10 +94,10 @@
 			<scope>compile</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-pubsub -->
-				<dependency>
-					<groupId>com.google.cloud</groupId>
-					<artifactId>google-cloud-pubsub</artifactId>
-				</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-pubsub</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-core</artifactId>
@@ -143,6 +143,15 @@
 	</dependencyManagement>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>resources</directory>
+				<targetPath>${project.build.outputDirectory}</targetPath>
+				<includes>
+					<include>application.properties</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

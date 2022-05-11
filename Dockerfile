@@ -17,9 +17,10 @@ RUN mvn package -DskipTests
 FROM adoptopenjdk/openjdk8:jdk8u202-b08-alpine-slim
 
 # Copy the jar to the production image from the builder stage.
-COPY --from=builder /app/target/sandbox5-0.0.1-SNAPSHOT.jar /mon.jar
+COPY --from=builder /app/target/sandbox5-0.0.1-SNAPSHOT.jar /sandbox.jar
+ENV SPRING_PROFILES_ACTIVE=prod
 
 # Run the web service on container startup.
 
-CMD ["java","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/mon.jar"]
+CMD ["java","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/sandbox.jar"]
 

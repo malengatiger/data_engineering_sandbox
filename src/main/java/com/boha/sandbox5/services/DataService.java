@@ -10,6 +10,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,26 +21,41 @@ import java.util.logging.Logger;
 public class DataService {
     private static final Logger LOGGER = Logger.getLogger(DataService.class.getName());
     private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
-    private static final String mm = "🔵 🔵 🔵", nn = " \uD83D\uDD36 \uD83D\uDD36 \uD83D\uDD36 \uD83D\uDD36";
+    private static final String mm = "🔵 🔵 🔵 🔵 🔵", nn = " \uD83D\uDD36 \uD83D\uDD36 \uD83D\uDD36 \uD83D\uDD36";
     @Autowired
     private MongoClient mongoClient;
     private MongoDatabase db;
+    @Value("${spring.data.mongodb.database}")
+    private String databaseName;
     public DataService() {
         LOGGER.info(mm + " DataService constructed " + mm);
 
     }
-    public List<Landmark> getLandmarks() {
-       setDatabase();
-        MongoCollection<Document> col = db.getCollection("landmarks");
+    public void initialize() {
+        if (databaseName != null) {
+            db = mongoClient.getDatabase(databaseName);
+            LOGGER.info(mm + " DataService initialize: database initialized OK!: "
+                    + mm + " " + databaseName + " " + mm);
+            LOGGER.info(mm + " DataService ready to rumble: " + " " + mm);
+        } else {
+            LOGGER.info(mm + " DataService initialize: mongoDB database name not available");
+        }
+    }
+    private  FindIterable<Document> getDocuments(String collectionName) {
+        MongoCollection<Document> col = db.getCollection(collectionName);
         FindIterable<Document> docs =  col.find();
+        LOGGER.info(nn + " Documents found: ");
+        return docs;
+    }
+    public List<Landmark> getLandmarks() {
+        List<Landmark> marks = new ArrayList<>();
+        FindIterable<Document> docs =  getDocuments("landmarks");
         LOGGER.info(nn + " Landmarks Listing: ");
         int cnt = 0;
         int totalCities = 0;
-        List<Landmark> marks = new ArrayList<>();
+
         for (Document doc : docs) {
             Landmark mark = G.fromJson(doc.toJson(), Landmark.class);
-            LOGGER.info("\uD83D\uDD36 \uD83D\uDD36 Landmark: #" + (cnt+1) + " " + mark.getLandmarkName()
-                    + " \uD83C\uDD7F️ cities: " + mark.getCities().size());
             marks.add(mark);
             cnt++;
             totalCities +=  mark.getCities().size();
@@ -49,27 +65,18 @@ public class DataService {
         return marks;
     }
     public List<Association> getAssociations() {
-       setDatabase();
-        MongoCollection<Document> col = db.getCollection("associations");
-        FindIterable<Document> docs =  col.find();
+        List<Association> associations = new ArrayList<>();
+        FindIterable<Document> docs =  getDocuments("associations");
         LOGGER.info(nn + "  Association Listing: ");
         int cnt = 0;
-        List<Association> marks = new ArrayList<>();
+
         for (Document doc : docs) {
             Association mark = G.fromJson(doc.toJson(), Association.class);
-            LOGGER.info("\uD83D\uDD36 \uD83D\uDD36 Association: #" + (cnt+1)
-                    + " " + mark.getAssociationName());
-            marks.add(mark);
+            associations.add(mark);
             cnt++;
         }
-        LOGGER.info(nn + "  Landmarks found: " + marks.size());
-        return marks;
+        LOGGER.info(nn + "  Associations found: " + associations.size());
+        return associations;
     }
-    private boolean setDatabase() {
-        if (db == null) {
-            db = mongoClient.getDatabase("ardb");
-            return true;
-        }
-        return false;
-    }
+
 }

@@ -10,3 +10,10 @@ Service URL: https://gcp-sandbox-rjkpygdggq-ew.a.run.app
 /////////  🔷 🔷 🔷 🔷 🔷 🔷 Google Cloud Run  🔷 🔷 🔷 🔷 🔷 🔷////////
 
 curl 'http://localhost:8094/actuator/auditevents?principal=alice&after=2019-04-03T14%3A01%3A11.235Z&type=logout' -i -X GET
+
+gcloud beta runtime-config configs variables set greeting  "Hello GCP Sandbox"  --config-name gcpsandbox
+
+PROJECT_ID=$(gcloud config get-value project)
+
+./mvnw compile com.google.cloud.tools:jib-maven-plugin:3.2.1:build \
+  -Dimage=gcr.io/gcp-sandbox-33/gcp-sandbox

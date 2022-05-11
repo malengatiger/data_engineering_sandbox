@@ -57,21 +57,20 @@ public class MainController {
     @GetMapping("/check")
     private ResponseEntity<Object> checkData() {
         List<Landmark> marks = dataService.getLandmarks();
-        LOGGER.info("\n\n" + mm + mm + mm +"  Landmark Listing: ");
+        LOGGER.info("\n\ncheck:" + mm + mm + mm +"  Landmark Listing: ");
         LOGGER.info(mm + "  Landmarks found: " + marks.size());
         int totalLandmarks = 0;
         for (Landmark m: marks) {
             totalLandmarks +=  m.getCities().size();
         }
-        LOGGER.info(mm + "  " +
-                "Average Cities per Landmark: " + (totalLandmarks/marks.size()));
+        if (!marks.isEmpty()) {
+            LOGGER.info(mm + "  " +
+                    "Average number of Cities per Landmark: " + (totalLandmarks / marks.size()));
+        }
 
         List<Association> asses = dataService.getAssociations();
-        LOGGER.info("\n\n" + nn + nn + nn + "  Association Listing: ");
+        LOGGER.info("\n\ncheck: " + nn + nn + nn + "  Association Listing: ");
         LOGGER.info(nn + nn + "  Associations found: " + asses.size());
-        for (Association m: asses) {
-            LOGGER.info(nn + "  " + m.getAssociationName());
-        }
 
         Bag bag = new Bag(asses, marks);
         return ResponseEntity.ok(bag);
