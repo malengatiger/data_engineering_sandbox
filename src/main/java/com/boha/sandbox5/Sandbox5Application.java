@@ -1,6 +1,7 @@
 package com.boha.sandbox5;
 
 import com.boha.sandbox5.services.DataService;
+import com.boha.sandbox5.services.PublisherService;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
@@ -60,6 +61,7 @@ public class Sandbox5Application implements ApplicationListener<ApplicationReady
 	}
 
 	static final String mmx = "\uD83E\uDD6C \uD83E\uDD6C \uD83E\uDD6C ", mmz = "\uD83C\uDF4E \uD83C\uDF4E \uD83C\uDF4E \uD83C\uDF4E";
+
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		LOGGER.info(mmx +" onApplicationEvent: ApplicationReadyEvent ...");
@@ -67,6 +69,7 @@ public class Sandbox5Application implements ApplicationListener<ApplicationReady
 				+ event.getSpringApplication().toString());
 		LOGGER.info(mmx +" onApplicationEvent: initialize DataService for MongoDB access ...");
 		dataService.initialize();
+		publisherService.listenForDatabaseChanges();
 
 	}
 
@@ -134,6 +137,8 @@ public class Sandbox5Application implements ApplicationListener<ApplicationReady
 	private String mongoString;
 	@Autowired
 	private DataService dataService;
+	@Autowired
+	private PublisherService publisherService;
 
 
 	@Bean
