@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class DataService {
     private static final Logger LOGGER = Logger.getLogger(DataService.class.getName());
     private static final Gson G = new GsonBuilder().setPrettyPrinting().create();
-    private static final String mm = "🔵 🔵 🔵 🔵 🔵", nn = " \uD83D\uDD36 \uD83D\uDD36 \uD83D\uDD36 \uD83D\uDD36";
+    private static final String mm = "🔵 🔵 🔵 🔵 🔵 ", nn = " \uD83D\uDD36 \uD83D\uDD36 \uD83D\uDD36 \uD83D\uDD36 ";
     @Autowired
     private MongoClient mongoClient;
     private MongoDatabase db;
@@ -43,14 +43,11 @@ public class DataService {
     }
     private  FindIterable<Document> getDocuments(String collectionName) {
         MongoCollection<Document> col = db.getCollection(collectionName);
-        FindIterable<Document> docs =  col.find();
-        LOGGER.info(nn + " Documents found: ");
-        return docs;
+        return col.find();
     }
     public List<Landmark> getLandmarks() {
         List<Landmark> marks = new ArrayList<>();
         FindIterable<Document> docs =  getDocuments("landmarks");
-        LOGGER.info(nn + " Landmarks Listing: ");
         int cnt = 0;
         int totalCities = 0;
 
@@ -60,22 +57,19 @@ public class DataService {
             cnt++;
             totalCities +=  mark.getCities().size();
         }
-        LOGGER.info(nn + "  Landmarks found: " + cnt);
-        LOGGER.info(nn + "  Average Cities per Landmarks: " + (totalCities/cnt));
+        LOGGER.info(nn + " Landmarks found: " + cnt);
+        LOGGER.info(nn + " Average Cities per Landmarks: " + (totalCities/cnt));
         return marks;
     }
     public List<Association> getAssociations() {
         List<Association> associations = new ArrayList<>();
         FindIterable<Document> docs =  getDocuments("associations");
-        LOGGER.info(nn + "  Association Listing: ");
-        int cnt = 0;
 
         for (Document doc : docs) {
             Association mark = G.fromJson(doc.toJson(), Association.class);
             associations.add(mark);
-            cnt++;
         }
-        LOGGER.info(nn + "  Associations found: " + associations.size());
+        LOGGER.info(nn + " Associations found: " + associations.size());
         return associations;
     }
 

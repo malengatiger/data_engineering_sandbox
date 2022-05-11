@@ -57,7 +57,6 @@ public class MainController {
     @GetMapping("/check")
     private ResponseEntity<Object> checkData() {
         List<Landmark> marks = dataService.getLandmarks();
-        LOGGER.info("\n\ncheck:" + mm + mm + mm +"  Landmark Listing: ");
         LOGGER.info(mm + "  Landmarks found: " + marks.size());
         int totalLandmarks = 0;
         for (Landmark m: marks) {
@@ -69,7 +68,6 @@ public class MainController {
         }
 
         List<Association> asses = dataService.getAssociations();
-        LOGGER.info("\n\ncheck: " + nn + nn + nn + "  Association Listing: ");
         LOGGER.info(nn + nn + "  Associations found: " + asses.size());
 
         Bag bag = new Bag(asses, marks);
