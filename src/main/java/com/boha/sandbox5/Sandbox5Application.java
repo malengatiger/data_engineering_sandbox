@@ -164,7 +164,7 @@ public class Sandbox5Application implements ApplicationListener<ApplicationReady
 			String payload,
 			@Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
 		LOGGER.info(xx + "Message arrived via an inbound channel adapter from subscription: "
-				+ defaultSubscription + " \uD83C\uDD7F️ payload: "+ payload);
+				+ defaultSubscription + " \uD83C\uDD7F️ payload: "+ payload + " \uD83C\uDD7F️ \uD83C\uDD7F️ \uD83C\uDD7F️" );
 		message.ack();
 	}
 	private static final String mm = "\uD83C\uDF4E \uD83C\uDF4E \uD83C\uDF4E", xx = "\uD83D\uDECE \uD83D\uDECE \uD83D\uDECE ";
