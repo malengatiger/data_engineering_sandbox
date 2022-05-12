@@ -58,6 +58,30 @@ public class PublisherService {
         LOGGER.info("Landmarks found: " + list.size());
         return list;
     }
+    public List<Association> getAssociations() {
+        List<Association> list = dataService.getAssociations();
+        LOGGER.info("Associations found: " + list.size());
+        return list;
+    }
+
+    public boolean publishAssociations() throws Exception {
+        List<Association> list = getAssociations();
+        for (Association m : list) {
+            LOGGER.info(mx +
+                    "Sending to PubSub: Association: " + my +
+                    " \uD83C\uDF4E : " + m.getAssociationName()
+                    + " id " + m.getAssociationID());
+
+            dataTransferGateway.sendToPubsub(G.toJson(m));
+            LOGGER.info(mx + "Association sent to PubSub: " + m.getAssociationName());
+            int secondsToSleep = random.nextInt(10);
+            if (secondsToSleep < 1) secondsToSleep = 3;
+            LOGGER.info(mx + " ...zzzzzzz sleeping for " + secondsToSleep + " seconds");
+            TimeUnit.SECONDS.sleep(secondsToSleep);
+
+        }
+        return true;
+    }
 
     public boolean publishLandmarks() throws Exception {
         List<Landmark> list = getLandmarks();

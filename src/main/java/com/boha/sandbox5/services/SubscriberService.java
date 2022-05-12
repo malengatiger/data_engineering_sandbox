@@ -112,8 +112,8 @@ public class SubscriberService {
         } catch (Exception e) {
             LOGGER.info(mm + zz +
                     "Hey Boss, we fell down on the transfer!! " + e.toString() + " \uD83D\uDD34");
-            LOGGER.info(mm + zz + " starting databaseListen again????");
-            listenForDatabaseChanges();
+            //LOGGER.info(mm + zz + " starting databaseListen again????");
+            //listenForDatabaseChanges();
 
         }
 

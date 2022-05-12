@@ -54,6 +54,12 @@ public class MainController {
         boolean published = publisherService.publishLandmarks();
         return ResponseEntity.ok(published);
     }
+    @GetMapping("/publishAssociations")
+    private ResponseEntity<Object> publishAssociation() throws Exception {
+        LOGGER.info("🔴 🔴 🔴 publishAssociations ....");
+        boolean published = publisherService.publishAssociations();
+        return ResponseEntity.ok(published);
+    }
     @GetMapping("/check")
     private ResponseEntity<Object> checkData() {
         List<Landmark> marks = dataService.getLandmarks();
