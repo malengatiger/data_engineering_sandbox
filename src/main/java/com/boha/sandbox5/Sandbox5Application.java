@@ -35,6 +35,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.handler.annotation.Header;
@@ -104,35 +105,21 @@ public class Sandbox5Application implements ApplicationListener<ApplicationReady
 	@ServiceActivator(inputChannel = "dataTransferChannel")
 	public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
 		PubSubMessageHandler adapter = new PubSubMessageHandler(pubsubTemplate, defaultTopic);
-//		adapter.setPublishCallback(
-//				new ListenableFutureCallback<Object>() {
-//					@Override
-//					public void onFailure(@NotNull Throwable throwable) {
-//						LOGGER.info(mm + "onFailure: \uD83D\uDD34 \uD83D\uDD34 " +
-//								"There was an error sending the message.");
-//						LOGGER.info(throwable.getMessage());
-//					}
-//
-//					@Override
-//					public void onSuccess(String result) {
-//						LOGGER.info(mm + " message onSuccess: \uD83E\uDD6C\uD83E\uDD6C " +
-//								"Data was sent to topic: " + defaultTopic +
-//								"\n"+ mm + " result: " + result);
-//					}
-//				});
-		adapter.setPublishCallback(new ListenableFutureCallback<String>() {
-			@Override
-			public void onFailure(@NotNull Throwable throwable) {
-				LOGGER.info(mm + "onFailure: \uD83D\uDD34 \uD83D\uDD34 " +
-								"There was an error sending the message.");
-						LOGGER.info(throwable.getMessage());
-			}
 
+		adapter.setSuccessCallback(new PubSubMessageHandler.SuccessCallback() {
 			@Override
-			public void onSuccess(String result) {
-				LOGGER.info(mm + " message onSuccess: \uD83E\uDD6C\uD83E\uDD6C " +
-								"Data was sent to topic: " + defaultTopic +
-								"\n"+ mm + " result: " + result);
+			public void onSuccess(String ackId, Message<?> message) {
+				LOGGER.info(mm + " PubSub message onSuccess: \uD83E\uDD6C\uD83E\uDD6C " +
+						"Data was sent to topic: " + defaultTopic +
+						"\n"+ mm + " message: " + message.getPayload());
+			}
+		});
+		adapter.setFailureCallback(new PubSubMessageHandler.FailureCallback() {
+			@Override
+			public void onFailure(Throwable cause, Message<?> message) {
+				LOGGER.info(mm + "PubSub message onFailure: \uD83D\uDD34 \uD83D\uDD34 " +
+						"There was an error sending the message.");
+				LOGGER.info(cause.getMessage());
 			}
 		});
 		return adapter;
