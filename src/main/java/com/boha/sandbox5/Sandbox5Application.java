@@ -1,7 +1,7 @@
 package com.boha.sandbox5;
 
 import com.boha.sandbox5.services.DataService;
-import com.boha.sandbox5.services.PublisherService;
+import com.boha.sandbox5.services.SubscriberService;
 import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
@@ -78,7 +78,7 @@ public class Sandbox5Application implements ApplicationListener<ApplicationReady
 				+ event.getSpringApplication().toString());
 		LOGGER.info(mmx +" onApplicationEvent: initialize DataService for MongoDB access ...");
 		dataService.initialize();
-		publisherService.listenForDatabaseChanges();
+		subscriberService.listenForDatabaseChanges();
 
 	}
 
@@ -177,7 +177,7 @@ public class Sandbox5Application implements ApplicationListener<ApplicationReady
 	@Autowired
 	private DataService dataService;
 	@Autowired
-	private PublisherService publisherService;
+	private SubscriberService subscriberService;
 
 
 	@Bean

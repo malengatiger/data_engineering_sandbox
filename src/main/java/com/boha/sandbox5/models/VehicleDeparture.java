@@ -17,7 +17,8 @@ public class VehicleDeparture {
     String associationID;
     String associationName;
     String vehicleReg;
-    String created, type;
-    VehicleType vehicleType;
+    String created, type, dateDeparted;
+    String make, model;
+    int capacity;
     Position position;
 }
