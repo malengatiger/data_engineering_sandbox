@@ -48,6 +48,7 @@ public class PublisherService {
 
 
     @MessagingGateway(defaultRequestChannel = "dataTransferChannel")
+
     public interface DataTransferGateway {
         void sendToPubsub(String text);
     }
@@ -99,7 +100,8 @@ public class PublisherService {
                         VehicleLocation vl = G.fromJson(mDoc.toJson(), VehicleLocation.class);
                         vl.setType(Constants.VEHICLE_LOCATION);
                         LOGGER.info(mx +
-                                "A vehicleLocation:  " + my + vl.getVehicleReg());
+                                "A vehicleLocation:  " + my + vl.getVehicleReg() + " "
+                                + vl.getVehicleType().getMake() + " " + vl.getVehicleType().getModel());
                         dataTransferGateway.sendToPubsub(G.toJson(vl));
                         break;
                     case "commuterrequests":

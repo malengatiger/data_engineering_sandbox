@@ -1,0 +1,13 @@
+Possible improvement to Engineer Role description on profile
+
+I am an experienced Engineer that's been around the block a few times. Based on my skills I can be a Cloud Architect, a Data Engineer,
+a Backend Engineer and a Solution Architect. In the Braintrust talent profile I am forced to pick just one. I am working on my profile and
+in support of that cause I obtained two GCP certifications: Professional Cloud Architect and Professional Data Engineer.
+
+I would like my profile to show that I reside in all these "role specializations" at the same time. For example, A client looking for say,
+a Senior Backend Engineer, may see my published description as Cloud Architect and not be aware that I can fit the role he is looking for.
+
+It is said that what a reader sees in the first few seconds of looking at a profile or resume forms a strong first impression. It'd be great if that
+first impression encompasses what is actually possible regarding the roles I could play.
+
+Would the product team consider making it possible to select multiple roles per profile?

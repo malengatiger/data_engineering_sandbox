@@ -6,15 +6,21 @@ import com.google.cloud.spring.core.DefaultGcpProjectIdProvider;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.core.publisher.PubSubPublisherTemplate;
 import com.google.cloud.spring.pubsub.core.subscriber.PubSubSubscriberTemplate;
+import com.google.cloud.spring.pubsub.integration.AckMode;
+import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
+import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.DefaultPublisherFactory;
 import com.google.cloud.spring.pubsub.support.DefaultSubscriberFactory;
+import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCursor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -28,7 +34,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -113,7 +122,7 @@ public class Sandbox5Application implements ApplicationListener<ApplicationReady
 //				});
 		adapter.setPublishCallback(new ListenableFutureCallback<String>() {
 			@Override
-			public void onFailure( Throwable throwable) {
+			public void onFailure(@NotNull Throwable throwable) {
 				LOGGER.info(mm + "onFailure: \uD83D\uDD34 \uD83D\uDD34 " +
 								"There was an error sending the message.");
 						LOGGER.info(throwable.getMessage());
@@ -128,11 +137,41 @@ public class Sandbox5Application implements ApplicationListener<ApplicationReady
 		});
 		return adapter;
 	}
-	private static final String mm = "\uD83C\uDF4E \uD83C\uDF4E \uD83C\uDF4E";
+
+	// Create a message channel for messages arriving from the subscription `sub-one`.
+	@Bean
+	public MessageChannel inputMessageChannel() {
+		return new PublishSubscribeChannel();
+	}
+
+	// Create an inbound channel adapter to listen to the subscription `sub-one` and send
+// messages to the input message channel.
+	@Bean
+	public PubSubInboundChannelAdapter inboundChannelAdapter(
+			@Qualifier("inputMessageChannel") MessageChannel messageChannel,
+			PubSubTemplate pubSubTemplate) {
+		PubSubInboundChannelAdapter adapter =
+				new PubSubInboundChannelAdapter(pubSubTemplate, defaultSubscription);
+		adapter.setOutputChannel(messageChannel);
+		adapter.setAckMode(AckMode.MANUAL);
+		adapter.setPayloadType(String.class);
+		return adapter;
+	}
+
+	// Define what happens to the messages arriving in the message channel.
+	@ServiceActivator(inputChannel = "inputMessageChannel")
+	public void messageReceiver(
+			String payload,
+			@Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage message) {
+		LOGGER.info(xx + "Message arrived via an inbound channel adapter from subscription: "
+				+ defaultSubscription + " \uD83C\uDD7F️ payload: "+ payload);
+		message.ack();
+	}
+	private static final String mm = "\uD83C\uDF4E \uD83C\uDF4E \uD83C\uDF4E", xx = "\uD83D\uDECE \uD83D\uDECE \uD83D\uDECE ";
 	@Value("${default.topic}")
 	private String defaultTopic;
-	@Value("${vehicleLocation.topic}")
-	private String vehicleLocationTopic;
+	@Value("${default.subscription}")
+	private String defaultSubscription;
 	@Value("${mongoString}")
 	private String mongoString;
 	@Autowired

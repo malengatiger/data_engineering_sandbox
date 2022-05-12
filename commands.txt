@@ -17,3 +17,5 @@ PROJECT_ID=$(gcloud config get-value project)
 
 ./mvnw compile com.google.cloud.tools:jib-maven-plugin:3.2.1:build \
   -Dimage=gcr.io/gcp-sandbox-33/gcp-sandbox
+
+gcloud asset search-all-resources --scope=projects/gcp-sandbox-33
